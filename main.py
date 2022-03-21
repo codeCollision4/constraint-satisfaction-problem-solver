@@ -26,29 +26,54 @@ def main():
 
     # Getting variable data from .var file if path exists
     if args.variables.exists() and args.variables.is_file():
-        print("made it to vars")
         # Looping thru file
-        v = []
+        domains = [] # Holds domain of each variable
+        letters = [] # Holds letter for each, to be used with constraints
         with args.variables.open() as f:
             for line in f:
-                domain = line.split()
-                domain.pop(0)
-                v.append(domain)
+                v = line.split()
+                l = v.pop(0).split(":").pop(0) # Removing first element, then getting the letter
+                letters.append(l)
+                v = [int(x) for x in v] # Converting all ints from string to int TODO optimize
+                domains.append(v)
+        print(letters)
+        print(domains)
     else:
         print("Please provide a .var file that exists. Make sure you are not just providing a directory.")
+        exit()
 
     # Getting constraint data from .var file if path exists
     if args.constraints.exists() and args.constraints.is_file():
-        print("made it to cons")
+        # Looping thru file
+        c = [] # Holds constraint relationships
+        for l in letters:
+            t = []
+            for i in range(len(letters)):
+                t.append(0)
+            c.append(t)    # Creating a 2d list, first dim is left of the OP, second is right of the OP. The value will be the OP. TODO optimize
+        with args.constraints.open() as f:
+            for line in f:
+                cons = line.split()
+                if cons[0] in letters and cons[2] in letters: # TODO optimize
+                    left = letters.index(cons[0])
+                    right = letters.index(cons[2])
+                    c[left][right] = cons[1]
+                else:
+                    print("Constraint file contains variable names that are not in the variable file. Please make sure you are inputing the correct and matching paths.")
+                    exit()
+        print(c)
     else:
         print("Please provide a .con file that exists. Make sure you are not just providing a directory.")
+        exit()
 
     # Getting enforcement setting from command line
-    if args.consistency_enforcing == "none" or args.consistency_enforcing == "fc":
-        print("made it to none/fc")
+    con_enf = "" 
+    if args.consistency_enforcing == "none": con_enf = "none"
+    elif args.consistency_enforcing == "fc": con_enf = "fc"
     else:
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
-
-
+        exit()
+        
+        
 if __name__ == '__main__':
     main()
