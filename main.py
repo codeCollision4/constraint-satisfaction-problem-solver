@@ -36,8 +36,6 @@ def main():
                 letters.append(l)
                 v = [int(x) for x in v] # Converting all ints from string to int TODO optimize
                 domains.append(v)
-        print(letters)
-        print(domains)
     else:
         print("Please provide a .var file that exists. Make sure you are not just providing a directory.")
         exit()
@@ -45,23 +43,28 @@ def main():
     # Getting constraint data from .var file if path exists
     if args.constraints.exists() and args.constraints.is_file():
         # Looping thru file
-        c = [] # Holds constraint relationships
+        constraints = [] # Holds constraint relationships
         for l in letters:
             t = []
-            for i in range(len(letters)):
+            for i in letters:
                 t.append(0)
-            c.append(t)    # Creating a 2d list, first dim is left of the OP, second is right of the OP. The value will be the OP. TODO optimize
+            constraints.append(t)    # Creating a 2d list, first dim is left of the OP, second is right of the OP. The value will be the OP. TODO optimize
         with args.constraints.open() as f:
             for line in f:
                 cons = line.split()
                 if cons[0] in letters and cons[2] in letters: # TODO optimize
                     left = letters.index(cons[0])
                     right = letters.index(cons[2])
-                    c[left][right] = cons[1]
+                    constraints[left][right] = cons[1]
+                    if cons[1] == "<":
+                        constraints[right][left] = ">"
+                    elif cons[1] == ">":
+                        constraints[right][left] = "<"
+                    else:
+                        constraints[right][left] = cons[1]
                 else:
                     print("Constraint file contains variable names that are not in the variable file. Please make sure you are inputing the correct and matching paths.")
                     exit()
-        print(c)
     else:
         print("Please provide a .con file that exists. Make sure you are not just providing a directory.")
         exit()
@@ -73,7 +76,18 @@ def main():
     else:
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
         exit()
+
+    print(letters)
+    print(domains)
+    print(constraints)
+
+    # Counting number of constraints for each letter
+    num_con = []
+    for list in constraints:
+        num_con.append(len(list) - list.count(0))
+    print(num_con)
+    
         
-        
+
 if __name__ == '__main__':
     main()
