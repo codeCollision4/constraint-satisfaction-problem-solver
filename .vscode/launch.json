@@ -4,12 +4,14 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Python: CSP Solver - Test Ex 1",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
+            "redirectOutput": true,
             "args": ["${workspaceFolder}/ex1.var", "${workspaceFolder}/ex1.con", "none"],
             "justMyCode": true
         },
@@ -19,6 +21,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
+            "redirectOutput": true,
             "args": ["${workspaceFolder}/ex2.var", "${workspaceFolder}/ex2.con", "none"],
             "justMyCode": true
         },
@@ -28,6 +31,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
+            "redirectOutput": true,
             "args": ["${workspaceFolder}/ex3.var", "${workspaceFolder}/ex3.con", "none"],
             "justMyCode": true
         }

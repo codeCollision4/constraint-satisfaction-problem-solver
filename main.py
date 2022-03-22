@@ -82,7 +82,7 @@ def main():
     # Creating dictionaries for domains, constraints and num of constraints. Letters array will hold the keys for each.
 
     # Init Search Algorithms
-    solver = sa(domains, constraints, num_con)
+    solver = sa(letters, domains, constraints, num_con)
 
     # Getting enforcement setting from command line
     if args.consistency_enforcing == "none": solver.backtracking() # Call backtracking solver
@@ -91,10 +91,10 @@ def main():
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
         exit()
 
-    print(letters)
-    print(domains)
-    print(constraints)
-    print(num_con)
+    # print(letters)
+    # print(domains)
+    # print(constraints)
+    # print(num_con)
 
     
     
