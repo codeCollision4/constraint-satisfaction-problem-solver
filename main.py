@@ -1,8 +1,10 @@
 import argparse
 from pathlib import Path
+from algorithms import backtracking, forward_checking
 
 '''
-Each variable read in from *.var will be put into a list. So that list will be a 2d array. A=0, B=1 etc. To access the third value of A's domain it would be list[0][2] 
+Each variable read in from *.var will be put into a dictionary. 
+The domain, constraint relationships, and number of constraints can be accessed by provided the letter as the key in any dict.
 '''
 
 
@@ -27,15 +29,15 @@ def main():
     # Getting variable data from .var file if path exists
     if args.variables.exists() and args.variables.is_file():
         # Looping thru file
-        domains = [] # Holds domain of each variable
-        letters = [] # Holds letter for each, to be used with constraints
+        domains = {} # Holds domain of each variable
+        letters = {} # Holds letter for each, to be used with constraints. Value is a number to be used like an index
         with args.variables.open() as f:
-            for line in f:
+            for idx, line in enumerate(f):
                 v = line.split()
                 l = v.pop(0).split(":").pop(0) # Removing first element, then getting the letter
-                letters.append(l)
+                letters[l] = idx
                 v = [int(x) for x in v] # Converting all ints from string to int TODO optimize
-                domains.append(v)
+                domains[l] = v
     else:
         print("Please provide a .var file that exists. Make sure you are not just providing a directory.")
         exit()
@@ -43,36 +45,47 @@ def main():
     # Getting constraint data from .var file if path exists
     if args.constraints.exists() and args.constraints.is_file():
         # Looping thru file
-        constraints = [] # Holds constraint relationships
+        constraints = {} # Holds constraint relationships
         for l in letters:
             t = []
             for i in letters:
                 t.append(0)
-            constraints.append(t)    # Creating a 2d list, first dim is left of the OP, second is right of the OP. The value will be the OP. TODO optimize
+            constraints[l] = t # put in a list with len equal to amount of letters into dict value
         with args.constraints.open() as f:
             for line in f:
                 cons = line.split()
-                if cons[0] in letters and cons[2] in letters: # TODO optimize
-                    left = letters.index(cons[0])
-                    right = letters.index(cons[2])
-                    constraints[left][right] = cons[1]
-                    if cons[1] == "<":
-                        constraints[right][left] = ">"
-                    elif cons[1] == ">":
-                        constraints[right][left] = "<"
+                if cons[0] in letters and cons[2] in letters: 
+                    left_key = cons[0] # Key for dict
+                    right_key = cons[2]
+                    left_index = letters[cons[0]]
+                    right_index = letters[cons[2]]
+                    op = cons[1]
+                    constraints[left_key][right_index] = op
+                    if op == "<":
+                        constraints[right_key][left_index] = ">"
+                    elif op == ">":
+                        constraints[right_key][left_index] = "<"
                     else:
-                        constraints[right][left] = cons[1]
-                else:
+                        constraints[right_key][left_index] = op
+                else:   
                     print("Constraint file contains variable names that are not in the variable file. Please make sure you are inputing the correct and matching paths.")
                     exit()
     else:
         print("Please provide a .con file that exists. Make sure you are not just providing a directory.")
         exit()
 
+    # Counting number of constraints for each letter
+    num_con = {}
+    for key, list in constraints.items():
+        num_con[key] = len(list) - list.count(0)
+    
+    # Creating dictionaries for domains, constraints and num of constraints. Letters array will hold the keys for each.
+
+
+
     # Getting enforcement setting from command line
-    con_enf = "" 
-    if args.consistency_enforcing == "none": con_enf = "none"
-    elif args.consistency_enforcing == "fc": con_enf = "fc"
+    if args.consistency_enforcing == "none": backtracking() # Call backtracking solver
+    elif args.consistency_enforcing == "fc": forward_checking() # Call forward checking solver
     else:
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
         exit()
@@ -80,12 +93,9 @@ def main():
     print(letters)
     print(domains)
     print(constraints)
-
-    # Counting number of constraints for each letter
-    num_con = []
-    for list in constraints:
-        num_con.append(len(list) - list.count(0))
     print(num_con)
+
+    
     
         
 
