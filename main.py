@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from algorithms import backtracking, forward_checking
+from algorithms import Search_Algorithms as sa
 
 '''
 Each variable read in from *.var will be put into a dictionary. 
@@ -81,11 +81,12 @@ def main():
     
     # Creating dictionaries for domains, constraints and num of constraints. Letters array will hold the keys for each.
 
-
+    # Init Search Algorithms
+    solver = sa(domains, constraints, num_con)
 
     # Getting enforcement setting from command line
-    if args.consistency_enforcing == "none": backtracking() # Call backtracking solver
-    elif args.consistency_enforcing == "fc": forward_checking() # Call forward checking solver
+    if args.consistency_enforcing == "none": solver.backtracking() # Call backtracking solver
+    elif args.consistency_enforcing == "fc": solver.forward_checking() # Call forward checking solver
     else:
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
         exit()

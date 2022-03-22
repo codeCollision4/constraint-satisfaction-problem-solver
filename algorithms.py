@@ -1,20 +1,26 @@
 
 
-# Backtracking Search Algorithm
+class Search_Algorithms():
+    def __init__(self, domains, constraints, num_con):
+        self.domains = domains
+        self.constraints = constraints
+        self.num_con = num_con
 
-def backtracking():
-    pass
+    # Backtracking Search Algorithm
 
-'''
-Helper Functions for Backtracking Search
-'''
+    def backtracking(self):
+        pass
+
+    '''
+    Helper Functions for Backtracking Search
+    '''
 
 
-# Forward Checking Search Algorithm
+    # Forward Checking Search Algorithm
 
-def forward_checking():
-    pass
+    def forward_checking(self):
+        pass
 
-'''
-Helper Functions for Forward Checking Search
-'''
+    '''
+    Helper Functions for Forward Checking Search
+    '''
