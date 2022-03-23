@@ -157,7 +157,7 @@ class Search_Algorithms():
     
     def print_branch(self, pf, l="", v=None):
         self.branch_num += 1 # New branch
-        branch = "{}.  ".format(self.branch_num)
+        branch = "{}. ".format(self.branch_num)
         if pf == 'failure':
             for letter, value in self.assignment.items():
                 branch += "{l}={v}, ".format(l=letter, v=value)
@@ -238,7 +238,7 @@ class Search_Algorithms():
         
     def print_forward(self, pf):
         self.branch_num += 1 # New branch
-        branch = "{}.  ".format(self.branch_num)
+        branch = "{}. ".format(self.branch_num)
         for idx, tuple in enumerate(self.assignment.items()):
             if idx == len(self.assignment) - 1:
                 branch += "{l}={v}  {pf}".format(l=tuple[0], v=tuple[1], pf=pf)
