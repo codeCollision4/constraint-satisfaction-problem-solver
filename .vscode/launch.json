@@ -34,6 +34,36 @@
             "redirectOutput": true,
             "args": ["${workspaceFolder}/ex3.var", "${workspaceFolder}/ex3.con", "none"],
             "justMyCode": true
+        },
+        {
+            "name": "Python: FC CSP Solver - Test Ex 1 ",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "redirectOutput": true,
+            "args": ["${workspaceFolder}/ex1.var", "${workspaceFolder}/ex1.con", "fc"],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: FC CSP Solver - Test Ex 2",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "redirectOutput": true,
+            "args": ["${workspaceFolder}/ex2.var", "${workspaceFolder}/ex2.con", "fc"],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: FC CSP Solver - Test Ex 3",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "redirectOutput": true,
+            "args": ["${workspaceFolder}/ex3.var", "${workspaceFolder}/ex3.con", "fc"],
+            "justMyCode": true
         }
         
     ]

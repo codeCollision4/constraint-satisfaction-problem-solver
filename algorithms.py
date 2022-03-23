@@ -1,5 +1,5 @@
-import operator
-from typing import List
+from copy import deepcopy
+
 
 class Search_Algorithms():
     '''
@@ -15,15 +15,11 @@ class Search_Algorithms():
         # Original data
         self.nodes = letters
         self.rev_nodes = {v: k for k, v in self.nodes.items()}
-        self.og_domains = domains
         self.constraints = constraints
-        self.og_num_con = num_con
         self.assignment = {} # Holds the value assigned to a node/letter
         self.a_set = set()
         self.not_a_set = set(node for node in self.nodes)
-        
-
-        # Modifiable data, initialized to original data
+        self.og_domains = deepcopy(domains)
         self.domains = domains
         self.num_con = num_con
         self.branch_num = 0
@@ -59,32 +55,11 @@ class Search_Algorithms():
         return "failure"
 
 
-        
-
-            
-
-        
-
     '''
     Helper Functions for Backtracking Search
     '''
 
-
-    # Forward Checking Search Algorithm
-
-    def forward_checking(self):
-        pass
-
-    '''
-    Helper Functions for Forward Checking Search
-    '''
-
-
-    '''
-    Helper functions for both
-    '''
-
-    def most_constrained_var(self):
+    def most_constrained_var(self, ):
         updated_domain = self._update_domain()
         min_value = min([len(updated_domain[letters]) for letters in updated_domain]) # Loops thru dict and finds smallest lenght list
         min_key_list = [key for key, val in updated_domain.items() if len(val) == min_value] # Creates a list of keys that contain smallest domains
@@ -196,3 +171,82 @@ class Search_Algorithms():
                 
         
         print(branch)
+
+
+ # Forward Checking Search Algorithm
+    # TODO in future make generic 
+    def forward_checking(self):
+        # Assignments Complete?
+        if len(self.assignment) == len(self.nodes):
+            self.print_branch("solution")
+            exit()
+
+        # Consistency Enforcing
+        if not self._check_domain():
+            self.print_forward("failure")
+            self.domains = self.og_domains
+            return "failure"
+
+
+        # Getting variable to assign value to
+        letter = self.most_constrained_var() # Holds a letter which is a key to all dicts
+        # Getting value to assign to variable chosen prior
+        value_list = self.least_constraining_value(letter)
+        # Checking consistency of value
+        for left_val in value_list:
+            if self.consistency(letter, left_val): # If value is consistent
+                self.a_set.add(letter)  # Set to hold var and check quickly if assigned, assignment dict is for return and to hold data
+                self.not_a_set.remove(letter)
+                self.assignment[letter] = left_val # adding to dict
+                result = self.forward_checking()
+                if result != "failure":
+                    return result
+                # Removing from assignment due to failure
+                self.a_set.remove(letter)
+                self.not_a_set.add(letter)
+                del self.assignment[letter]
+            else:
+                self.print_branch("failure", l=letter, v=left_val)
+        return "failure"
+
+    '''
+    Helper Functions for Forward Checking Search
+    '''
+
+    def _check_domain(self):
+        for letter, value in self.assignment.items():
+            for idx, constraint in enumerate(self.constraints[letter]):
+                right = self.rev_nodes[idx]
+                if right not in self.a_set and constraint != 0: # Not assigned and a constraint
+                    idx = 0
+                    domain_list = self.domains[right]
+                    while idx < len(domain_list):
+                        satisfied = self.satisfied(value, domain_list[idx], constraint)
+                        if not satisfied: # If constraint not satified return false
+                            domain_list.remove(domain_list[idx])
+                            if not domain_list:
+                                return False
+                        else:
+                            idx += 1
+                    # for idx, val in enumerate(self.domains[right]):
+                    #     satisfied = self.satisfied(value, val, constraint)
+                    #     if not satisfied: 
+                    #         self.domains[right].remove(val)
+                    #         if not self.domains[right]:
+                    #             return False
+        return True
+        
+    def print_forward(self, pf):
+        self.branch_num += 1 # New branch
+        branch = "{}.  ".format(self.branch_num)
+        for idx, tuple in enumerate(self.assignment.items()):
+            if idx == len(self.assignment) - 1:
+                branch += "{l}={v}  {pf}".format(l=tuple[0], v=tuple[1], pf=pf)
+            else:
+                branch += "{l}={v}, ".format(l=tuple[0], v=tuple[1])
+                
+        
+        print(branch)
+        
+            
+
