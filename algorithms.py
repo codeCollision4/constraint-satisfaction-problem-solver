@@ -54,7 +54,8 @@ class Search_Algorithms():
                 self.a_set.remove(letter)
                 self.not_a_set.add(letter)
                 del self.assignment[letter]
-            self.print_branch("failure", l=letter, v=left_val)
+            else:
+                self.print_branch("failure", l=letter, v=left_val)
         return "failure"
 
 
@@ -112,9 +113,10 @@ class Search_Algorithms():
         new = {}
         for key, list in self.constraints.items():
             for idx, constrain in enumerate(list):
-                if self.rev_nodes[idx] in self.a_set:
+                if self.rev_nodes[idx] in self.a_set and constrain != 0:
                     buffer += 1
             new[key] = len(list) - list.count(0) - buffer
+            buffer = 0
         return new
 
     def least_constraining_value(self, letter):
