@@ -91,10 +91,7 @@ def main():
         print("Please provide an option for the consistency enforcement. The choices are none and fc.")
         exit()
 
-    # print(letters)
-    # print(domains)
-    # print(constraints)
-    # print(num_con)
+ 
 
     
     
